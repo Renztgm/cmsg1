@@ -42,6 +42,7 @@ if ($updatePagesStmt->rowCount() > 0) {
     // echo "<script>alert('Unlinked pages associated with Website ID $targetWebsiteId');</script>";
 } else {
     // echo "<script>alert('No unlinked pages found.');</script>";
+
 }
 
 
@@ -112,6 +113,8 @@ $success = $stmt->execute([
 
 // After template insertion
 $templateId = $pdo->lastInsertId(); // Capture the newly inserted template's ID
+
+$newPageId = $pdo->lastInsertId();
 
 // Define 3 contents to insert
 $contents = [
@@ -190,15 +193,12 @@ foreach ($contents as $content) {
 
 if ($success) {
     echo "New template inserted successfully.";
-    header("Location: editpage.php?websiteId=$websiteId&pageId=$pageId");
-    exit();
 } else {
     $errorInfo = $stmt->errorInfo();
     echo "Error inserting template: " . $errorInfo[2];
 }
 
 }
-
 
 
 ?>
