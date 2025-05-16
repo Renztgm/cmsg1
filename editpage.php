@@ -93,6 +93,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contentId'])) {
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editTemplateId'])) {
+    $templateId = $_POST['editTemplateId'];
+    $templateName = $_POST['templateName'] ?? '';
+    $templateType = $_POST['templateType'] ?? '';
+    $width = $_POST['width'] ?? '';
+    $height = $_POST['height'] ?? '';
+    $backgroundColor = $_POST['backgroundColor'] ?? '';
+    $flexDirection = $_POST['flexDirection'] ?? '';
+    $alignItems = $_POST['alignItems'] ?? '';
+    $justifyContent = $_POST['justifyContent'] ?? '';
+    $margin = $_POST['margin'] ?? '';
+    $padding = $_POST['padding'] ?? '';
+
+    $stmt = $pdo->prepare("UPDATE templates SET templateName=?, templateType=?, width=?, height=?, backgroundColor=?, flexDirection=?, alignItems=?, justifyContent=?, margin=?, padding=? WHERE templateId=?");
+    $success = $stmt->execute([
+        $templateName, $templateType, $width, $height, $backgroundColor,
+        $flexDirection, $alignItems, $justifyContent, $margin, $padding, $templateId
+    ]);
+    if ($success) {
+        header("Location: editpage.php?websiteId=$websiteId&pageId=$pageId");
+        exit();
+    } else {
+        $updateFailed = true;
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -247,6 +273,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contentId'])) {
     </div>
 </div>
 
+<!-- Edit Template Modal -->
+<div id="editTemplateModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:3000; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:30px; border-radius:8px; min-width:320px; max-width:90vw; position:relative;">
+        <button onclick="closeTemplateModal()" style="position:absolute; top:10px; right:10px;">&times;</button>
+        <form id="modalEditTemplateForm" method="POST" action="editpage.php?websiteId=<?= $websiteId ?>&pageId=<?= $pageId ?>">
+            <input type="hidden" name="editTemplateId" id="modalTemplateId">
+            <div>
+                <label>Template Name:</label>
+                <input type="text" name="templateName" id="modalTemplateName">
+            </div>
+            <div>
+                <label>Type:</label>
+                <input type="text" name="templateType" id="modalTemplateType">
+            </div>
+            <div>
+                <label>Width:</label>
+                <input type="text" name="width" id="modalTemplateWidth">
+            </div>
+            <div>
+                <label>Height:</label>
+                <input type="text" name="height" id="modalTemplateHeight">
+            </div>
+            <div>
+                <label>Background Color:</label>
+                <input type="color" name="backgroundColor" id="modalTemplateBgColor">
+            </div>
+            <div>
+                <label>Flex Direction:</label>
+                <input type="text" name="flexDirection" id="modalTemplateFlexDirection">
+            </div>
+            <div>
+                <label>Align Items:</label>
+                <input type="text" name="alignItems" id="modalTemplateAlignItems">
+            </div>
+            <div>
+                <label>Justify Content:</label>
+                <input type="text" name="justifyContent" id="modalTemplateJustifyContent">
+            </div>
+            <div>
+                <label>Margin:</label>
+                <input type="text" name="margin" id="modalTemplateMargin">
+            </div>
+            <div>
+                <label>Padding:</label>
+                <input type="text" name="padding" id="modalTemplatePadding">
+            </div>
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
 <?php if (!empty($updateFailed)): ?>
 <script>
     alert('Update failed. Please try again.');
@@ -328,8 +405,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contentId'])) {
     }
 
     function editTemplate(template) {
-        alert('Edit template: ' + template.templateName);
-        // You can open a modal here or redirect to an edit page
+        document.getElementById('modalTemplateId').value = template.templateId;
+        document.getElementById('modalTemplateName').value = template.templateName || '';
+        document.getElementById('modalTemplateType').value = template.templateType || '';
+        document.getElementById('modalTemplateWidth').value = template.width || '';
+        document.getElementById('modalTemplateHeight').value = template.height || '';
+        document.getElementById('modalTemplateBgColor').value = template.backgroundColor || '#ffffff';
+        document.getElementById('modalTemplateFlexDirection').value = template.flexDirection || '';
+        document.getElementById('modalTemplateAlignItems').value = template.alignItems || '';
+        document.getElementById('modalTemplateJustifyContent').value = template.justifyContent || '';
+        document.getElementById('modalTemplateMargin').value = template.margin || '';
+        document.getElementById('modalTemplatePadding').value = template.padding || '';
+        document.getElementById('editTemplateModal').style.display = 'flex';
+    }
+
+    function closeTemplateModal() {
+        document.getElementById('editTemplateModal').style.display = 'none';
     }
 </script>
 

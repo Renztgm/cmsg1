@@ -3,7 +3,7 @@ include_once 'db.php';
 $_SESSION['websiteId'] = $_GET['websiteId'];
 $pageId = $_GET['pageId'];
 ?>
-
+<h1>Add Template </h1>
 <form method="POST" action="insert_template.php" enctype="multipart/form-data">
     <input type="text" name="websiteId" value="<?php echo $websiteId ?>" placeholder="Website ID" hidden>
     <input type="text" name="pageId" value="<?php echo $pageId ?>" placeholder="Template Name" hidden>
