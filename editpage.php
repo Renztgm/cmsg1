@@ -6,6 +6,11 @@ include_once 'checkpageassign.php';
 $websiteId = $_GET['websiteId'] ?? null;
 $pageId = $_GET['pageId'] ?? null;
 
+// Fetch all pages for this website
+$stmtPages = $pdo->prepare("SELECT pageId, name FROM page WHERE websiteId = ?");
+$stmtPages->execute([$websiteId]);
+$pages = $stmtPages->fetchAll(PDO::FETCH_ASSOC);
+
 // Delete template and its contents
 if (isset($_GET['delete_template'])) {
     $templateId = $_GET['delete_template'];
@@ -106,18 +111,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editTemplateId'])) {
     }
 }
 
-// Add "Enroll Now!" link
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_enroll_link'])) {
-    $enrollLink = 'enroll.php?websiteId=' . $websiteId;
-    $target = '_blank';
-    $enrollnow = 'Enroll Now!';
+// Add link (Enroll Now, Student Login, or Student Register)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_link_action'])) {
+    $action = $_POST['add_link_action'];
     $templateId = $_POST['enroll_template_id'] ?? null;
+    $target = '_blank';
     if ($templateId) {
-        $stmt = $pdo->prepare("INSERT INTO contents (templateId, tag, text, href, target) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$templateId, 'a', $enrollnow, $enrollLink, $target]);
+        if ($action === 'enroll') {
+            $link = 'enroll.php?websiteId=' . $websiteId;
+            $text = 'Enroll Now!';
+        } elseif ($action === 'login') {
+            $link = 'login.php'. $websiteId;
+            $text = 'Student Login';
+        } elseif ($action === 'register') {
+            $link = 'enroll.php'. $websiteId;
+            $text = 'Student Register';
+        }
+        if (isset($link) && isset($text)) {
+            $stmt = $pdo->prepare("INSERT INTO contents (templateId, tag, text, href, target) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$templateId, 'a', $text, $link, $target]);
+        }
     }
     header("Location: editpage.php?websiteId=$websiteId&pageId=$pageId");
     exit();
+}
+
+// Add new page to the page table
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_page'])) {
+    $name = $_POST['name'] ?? '';
+    $description = $_POST['description'] ?? '';
+    if ($name && $websiteId) {
+        $stmt = $pdo->prepare("INSERT INTO page (websiteId, name, description) VALUES (?, ?, ?)");
+        $stmt->execute([$websiteId, $name, $description]);
+        // Optionally, redirect to the new page or refresh
+        header("Location: editpage.php?websiteId=$websiteId&pageId=" . $pdo->lastInsertId());
+        exit();
+    }
 }
 ?>
 
@@ -131,19 +160,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_enroll_link'])) {
 </head>
 <body style="height: 100vh; overflow: auto;">
     <header style="z-index: 999;">
-        <div class="template-navigation" style="z-index: 999; height: 60px;background-color: #333; padding: 10px; display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+        <div class="template-navigation" style="z-index: 999; height: 60px;background-color: #2B7A78; padding: 10px; display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
             <h1 style="color: #fff;">Edit Page</h1>
             <div class="editpagenavigationsection">
                 <a href="index.php" style="color: #fff; text-decoration: none; font-weight: bold;">Home</a>
-                <a href="preview.php?websiteId=<?= $websiteId ?>&pageId=<?= $pageId ?>" target="_blank" style="color: #fff; text-decoration: none; font-weight: bold;">Preview</a>
+                <a href="preview.php?websiteId=<?= $websiteId ?>&pageId=<?= $pageId ?>" target="_blank" style="color: #fff; text-decoration: none; font-weight: bold;">View</a>
             </div>
         </div>  
     </header>
-    <div class="container" style="background-color: #ffffff; display: flex; flex-direction: row; padding: 0;">
+    <div class="container" style="background-color: #DEF2F1;display: flex; flex-direction: row; padding: 0;">
         <div class="preview" style="overflow: auto; height: 80vh; z-index: 0; width: 60%; margin: 20px; background-color: #f4f4f4;">
             <?php include 'preview.php'; ?>
         </div>
         <div class="tabs" style="overflow: auto; height: 80vh; z-index: 1000;width: 40%; padding: 20px; background-color: #fff; border-left: 1px solid #ccc;"> 
+
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('container1')">Tab 1</button>
                 <button class="tab-btn" onclick="showTab('container')">Tab 2</button>
@@ -156,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_enroll_link'])) {
                     <div class="form-container" style="margin: 20px 0;">
                         <div class="enroll-link-section">
                             <form method="POST" style="display:flex; align-items:center; gap:12px;">
-                                <input type="hidden" name="add_enroll_link" value="1">
+                                <input type="hidden" name="add_link_action" id="add_link_action" value="">
                                 <label for="enroll_template_id">Add to template:</label>
                                 <select name="enroll_template_id" id="enroll_template_id" required>
                                     <option value="">Select Template</option>
@@ -166,10 +196,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_enroll_link'])) {
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
-                                <button type="submit">
-                                    Add "Enroll Now!" Link to Page
-                                </button>
+                                <button type="button" onclick="setLinkAction('enroll')">Add "Enroll Now!" Link</button>
+                                <button type="button" onclick="setLinkAction('login')">Add "Student Login" Link</button>
+                                <button type="button" onclick="setLinkAction('register')">Add "Student Register" Link</button>
                             </form>
+                            <script>
+                            function setLinkAction(action) {
+                                document.getElementById('add_link_action').value = action;
+                                event.target.form.submit();
+                            }
+                            </script>
                         </div>
                     </div>
                 </div>
@@ -193,7 +229,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_enroll_link'])) {
                                     <ul>
                                         <?php foreach ($contents as $content): ?>
                                             <?php if ($content['templateId'] == $template['templateId']): ?>
-                                                <li>
+                                                <li style="display:flex;align-items:center;gap:8px;">
+                                                    <!-- Show image thumbnail if image, or icon if not -->
+                                                    <?php if (in_array($content['tag'], ['img', 'image']) && !empty($content['imagePath'])): ?>
+                                                        <img src="<?= htmlspecialchars($content['imagePath']) ?>" alt="img" style="width:15px;height:15px;object-fit:cover;border-radius:3px;">
+                                                    <?php elseif ($content['tag'] === 'a'): ?>
+                                                        <span title="Link" style="display:inline-block;width:15px;text-align:center;">🔗</span>
+                                                    <?php elseif (in_array($content['tag'], ['h1','h2','h3','h4','p'])): ?>
+                                                        <span title="Text" style="display:inline-block;width:15px;text-align:center;">📝</span>
+                                                    <?php else: ?>
+                                                        <span style="display:inline-block;width:15px;"></span>
+                                                    <?php endif; ?>
                                                     <input type="hidden" name="contentIds[]" value="<?= $content['contentId'] ?>">
                                                     <label>Content ID <?= $content['contentId'] ?>:</label>
                                                     <?php if (!in_array($content['tag'], ['img', 'image'])): ?>
@@ -218,7 +264,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_enroll_link'])) {
                 </div>
                 <div id="container2" class="tab-content" style="display: none;">
                     <div class="contentnito">
-                        <p>Tab 3 content (container2)</p>
+                        <form method="POST" style="background:#FEFFFF; border:1.5px solid #3AAFA9; border-radius:8px; padding:18px; max-width:400px;">
+                            <h3 style="color:#2B7A78;">Add New Page</h3>
+                            <label>Page Name:<br>
+                                <input type="text" name="name" required style="width:100%;margin-bottom:10px;">
+                            </label>
+                            <label>Description:<br>
+                                <textarea name="description" style="width:100%;margin-bottom:10px;"></textarea>
+                            </label>
+                            <button type="submit" name="add_page" style="background:#2B7A78;color:#FEFFFF;padding:8px 18px;border:none;border-radius:5px;">Add Page</button>
+                        </form>
+                        <div style="margin-bottom:18px; background:#FEFFFF; border:1.5px solid #3AAFA9; border-radius:8px; padding:12px;">
+                            <strong style="color:#2B7A78;">Pages for this Website:</strong>
+                            <ul style="list-style:none; padding-left:0; margin:8px 0 0 0;">
+                                <?php foreach ($pages as $page): ?>
+                                    <li style="margin-bottom:6px;">
+                                        <a href="editpage.php?websiteId=<?= htmlspecialchars($websiteId) ?>&pageId=<?= htmlspecialchars($page['pageId']) ?>"
+                                        style="color:#2B7A78; text-decoration:<?= $page['pageId'] == $pageId ? 'underline' : 'none' ?>; font-weight:<?= $page['pageId'] == $pageId ? 'bold' : 'normal' ?>;">
+                                            <?= htmlspecialchars($page['name']) ?> (ID: <?= $page['pageId'] ?>)
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>

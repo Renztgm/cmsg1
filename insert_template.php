@@ -17,8 +17,8 @@ if ($conn->connect_error) {
 
 // Collect and sanitize POST data
 $websiteId = $_POST['websiteId'];
-$templateName = $conn->real_escape_string($_POST['templateName']);
-$templateType = $conn->real_escape_string($_POST['templateType']);
+$templateName = $conn->real_escape_string($_POST['templateName']) ?? null;
+$templateType = $conn->real_escape_string($_POST['templateType']) ?? null;
 $width = $conn->real_escape_string($_POST['width']) . $conn->real_escape_string($_POST['widthSuffix']);
 $height = $conn->real_escape_string($_POST['height']) . $conn->real_escape_string($_POST['heightSuffix']);;
 $backgroundColor = $conn->real_escape_string($_POST['backgroundColor']);

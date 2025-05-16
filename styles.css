@@ -1,19 +1,27 @@
 /* Add this to your <head> or style.css */
 
+/* --- PALETTE COLORS --- */
+/* #17252A (dark), #2B7A78 (teal), #3AAFA9 (accent), #DEF2F1 (light bg), #FEFFFF (white) */
+
+body {
+    background: #DEF2F1;
+    color: #17252A;
+}
+
 /* General form container */
 .form-container {
-    background: #fff;
+    background: #FEFFFF;
     max-width: 500px;
     margin: 32px auto;
     padding: 32px 28px 24px 28px;
     border-radius: 10px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 24px rgba(42,122,120,0.08);
 }
 
 /* Headings */
 .form-container h1 {
     text-align: center;
-    color: #333;
+    color: #2B7A78;
     margin-bottom: 28px;
 }
 
@@ -21,7 +29,7 @@
 .form-container label {
     display: block;
     margin-bottom: 6px;
-    color: #444;
+    color: #2B7A78;
     font-weight: 500;
 }
 .form-container input[type="text"],
@@ -35,10 +43,10 @@
     width: 100%;
     padding: 10px 12px;
     margin-bottom: 16px;
-    border: 1px solid #d1d5db;
+    border: 1px solid #3AAFA9;
     border-radius: 5px;
     font-size: 15px;
-    background: #f9fafb;
+    background: #FEFFFF;
     transition: border-color 0.2s;
 }
 .form-container input[type="text"]:focus,
@@ -48,9 +56,9 @@
 .form-container input[type="email"]:focus,
 .form-container select:focus,
 .form-container textarea:focus {
-    border-color: #6366f1;
+    border-color: #2B7A78;
     outline: none;
-    background: #fff;
+    background: #DEF2F1;
 }
 
 /* Checkbox and inline elements */
@@ -63,8 +71,8 @@
 .form-container input[type="submit"] {
     width: 100%;
     padding: 12px;
-    background: #6366f1;
-    color: #fff;
+    background: #2B7A78;
+    color: #FEFFFF;
     border: none;
     border-radius: 5px;
     font-size: 16px;
@@ -75,7 +83,7 @@
 }
 .form-container button:hover,
 .form-container input[type="submit"]:hover {
-    background: #4f46e5;
+    background: #17252A;
 }
 
 /* Group fields for better spacing */
@@ -83,13 +91,13 @@
     margin-bottom: 18px;
 }
 
-    /* For tab and enroll section buttons */
+/* For tab and enroll section buttons */
 .tab-btn,
 .enroll-link-section button {
     width: auto;
     padding: 8px 18px;
-    background: #6366f1;
-    color: #fff;
+    background: #3AAFA9;
+    color: #FEFFFF;
     border: none;
     border-radius: 5px;
     font-size: 15px;
@@ -101,7 +109,8 @@
 .tab-btn.active,
 .tab-btn:hover,
 .enroll-link-section button:hover {
-    background: #4f46e5;
+    background: #2B7A78;
+    color: #FEFFFF;
 }
 
 /* Edit Template Modal Styles */
@@ -185,9 +194,9 @@
 
 /* Template card */
 .template-card {
-    border: 1px solid #e5e7eb;
+    border: 1px solid #3AAFA9;
     border-radius: 10px;
-    background: #fff;
+    background: #FEFFFF;
     margin-bottom: 24px;
     padding: 18px 20px 14px 20px;
     box-shadow: 0 2px 8px rgba(99,102,241,0.06);
@@ -199,7 +208,7 @@
 .template-card h3 {
     font-size: 18px;
     font-weight: bold;
-    color: #222;
+    color: #2B7A78;
     margin: 0 0 12px 0;
     display: flex;
     align-items: center;
@@ -223,14 +232,14 @@
 /* Content label */
 .template-card label {
     font-weight: 500;
-    color: #333;
+    color: #17252A;
     margin-right: 8px;
 }
 
 /* Edit/Delete buttons */
 .template-card .edit-btn {
-    background: #6366f1;
-    color: #fff;
+    background: #3AAFA9;
+    color: #FEFFFF;
     border: none;
     border-radius: 5px;
     padding: 5px 14px;
@@ -241,11 +250,11 @@
     transition: background 0.2s;
 }
 .template-card .edit-btn:hover {
-    background: #4f46e5;
+    background: #2B7A78;
 }
 .template-card .delete-btn {
     background: none;
-    color: #f87171;
+    color: #e53e3e;
     border: none;
     font-size: 14px;
     font-weight: bold;
@@ -255,5 +264,5 @@
     text-decoration: underline;
 }
 .template-card .delete-btn:hover {
-    color: #dc2626;
+    color: #b91c1c;
 }

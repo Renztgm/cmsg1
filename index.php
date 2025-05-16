@@ -1,8 +1,21 @@
 <?php
 include_once 'db.php';
 include 'createwebsite.php';
-
 ?>
+
+<!-- Top Navigation Bar -->
+<nav style="width:100%;background:#2B7A78;padding:18px 0 18px 0;box-shadow:0 2px 8px rgba(23,37,42,0.08);margin-bottom:32px;">
+    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 24px;">
+        <div style="font-size:1.5em;font-weight:bold;color:#FEFFFF;letter-spacing:1px;">
+            CMS Dashboard
+        </div>
+        <div style="display:flex;gap:18px;">
+            <a href="index.php" style="color:#FEFFFF;text-decoration:none;font-weight:500;font-size:1em;">Home</a>
+            
+            <a href="logoutuser.php" style="color:#3AAFA9;text-decoration:none;font-weight:500;font-size:1em;">Logout</a>
+        </div>
+    </div>
+</nav>
 
 <?php
 if (isset($_GET['delete_website'])) {
@@ -61,18 +74,18 @@ if (isset($_GET['delete_page'])) {
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         line-height: 1.6;
-        color: #333;
+        color: #17252A;
         max-width: 1200px;
         margin: 0 auto;
-        padding: 20px;
-        background-color: #fafafa;
+        padding: 0;
+        background-color: #DEF2F1;
     }
 
     .form-container {
-        background: white;
+        background: #FEFFFF;
         padding: 40px;
         border-radius: 12px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 2px 15px rgba(42,122,120,0.05);
         margin-bottom: 40px;
         max-width: 600px;
     }
@@ -142,12 +155,12 @@ if (isset($_GET['delete_page'])) {
     }
 
     .website-card {
-        background: white;
+        background: #FEFFFF;
         border-radius: 12px;
         overflow: hidden;
         transition: transform 0.2s, box-shadow 0.2s;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 15px rgba(42,122,120,0.05);
+        border: 1px solid #3AAFA9;
         display: block;
         text-decoration: none;
         color: inherit;
@@ -155,7 +168,7 @@ if (isset($_GET['delete_page'])) {
 
     .website-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(42,122,120,0.10);
     }
 
     .website-content {
@@ -193,7 +206,7 @@ if (isset($_GET['delete_page'])) {
     .website-title {
         font-size: 18px;
         font-weight: 600;
-        color: #2d3748;
+        color: #2B7A78;
         margin: 0;
     }
 
@@ -215,10 +228,11 @@ if (isset($_GET['delete_page'])) {
         border-radius: 6px;
         text-align: center;
         transition: all 0.2s;
+        background: #DEF2F1;
     }
 
     .delete-link:hover {
-        color: white;
+        color: #FEFFFF;
         background-color: #e53e3e;
     }
 </style>
