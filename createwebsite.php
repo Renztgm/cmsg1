@@ -22,6 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $query = "INSERT INTO website (name, logo, description) VALUES (:name, :logo, :description)";
             $stmt = $pdo->prepare($query);
 
+            
             if ($stmt->execute([
                 ':name' => $name,
                 ':logo' => $logoFilename,
