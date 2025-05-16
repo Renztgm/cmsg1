@@ -134,7 +134,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editTemplateId'])) {
     <header style="z-index: 999;">
         <div class="template-navigation" style="z-index: 999; height: 60px;background-color: #333; padding: 10px; display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
             <h1 style="color: #fff;">Edit Page</h1>
-            <a href="index.php" style="color: #fff; text-decoration: none; font-weight: bold;">Home</a>
+            <div class="editpagenavigationsection">
+                <a href="index.php" style="color: #fff; text-decoration: none; font-weight: bold;">Home</a>
+                <a href="preview.php?websiteId=<?= $websiteId ?>&pageId=<?= $pageId ?>" target="_blank" style="color: #fff; text-decoration: none; font-weight: bold;">Preview</a>
+            </div>
+            
         </div>  
     </header>
     <div class="container" style="background-color: #ffffff; display: flex; flex-direction: row; padding: 0;">
