@@ -32,22 +32,59 @@ $pageId = $_GET['pageId'];
             <option value="px">px</option>
             <option value="rem">rem</option>
             <option value="%">%</option>
-            <option value="vw">vh</option>
+            <option value="vh">vh</option>
         </select><br><br>
         <label for="backgroundColor">Background Color (integer value):</label>
         <input type="color" id="backgroundColor" name="backgroundColor"><br><br>
         <label for="borderValue">Border Value:</label>
         <input type="number" id="borderValue" name="borderValue"><br><br>
         <label for="borderStyle">Border Style:</label>
-        <input type="text" id="borderStyle" name="borderStyle"><br><br>
+        <!-- <input type="text" id="borderStyle" name="borderStyle"> -->
+        <select name="borderStyle">
+            <option value="solid">Solid</option>
+            <option value="dashed">Dashed</option>
+            <option value="dotted">Dotted</option>
+            <option value="double">Double</option>
+            <option value="groove">Groove</option>
+            <option value="ridge">Ridge</option>
+            <option value="inset">Inset</option>
+            <option value="outset">Outset</option>
+            <option value="none">None</option>
+            <option value="hidden">Hidden</option>
+        </select>
+        <br><br>
         <label for="borderColor">Border Color (integer value):</label>
-        <input type="color" id="borderColor" name="borderColor"><br><br>
+        <input type="color" id="borderColor" name="borderColor">
+        <br><br>
         <label for="flexDirection">Flex Direction:</label>
-        <input type="text" id="flexDirection" name="flexDirection"><br><br>
+        <!-- <input type="text" id="flexDirection" name="flexDirection"> -->
+         <select name="flexDirection">
+            <option value="row">Row</option>
+            <option value="row-reverse">Row Reverse</option>
+            <option value="column">Column</option>
+            <option value="column-reverse">Column Reverse</option>
+        </select>
+        <br><br>
         <label for="alignItems">Align Items:</label>
-        <input type="text" id="alignItems" name="alignItems"><br><br>
+        <!-- <input type="text" id="alignItems" name="alignItems"> -->
+         <select name="alignItems">
+            <option value="flex-start">Flex Start</option>
+            <option value="flex-end">Flex End</option>
+            <option value="center">Center</option>
+            <option value="baseline">Baseline</option>
+            <option value="stretch">Stretch</option>
+        </select>
+        <br><br>
         <label for="justifyContent">Justify Content:</label>
-        <input type="text" id="justifyContent" name="justifyContent"><br><br>
+        <!-- <input type="text" id="justifyContent" name="justifyContent"><br><br> -->
+        <select name="justifyContent">
+            <option value="flex-start">Flex Start</option>
+            <option value="flex-end">Flex End</option>
+            <option value="center">Center</option>
+            <option value="space-between">Space Between</option>
+            <option value="space-around">Space Around</option>
+            <option value="space-evenly">Space Evenly</option>
+        </select><br><br>
         <label for="margin">Margin:</label>
         <input type="number" id="margin" name="margin"><br><br>
         <label for="padding">Padding:</label>

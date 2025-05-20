@@ -121,11 +121,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_link_action'])) {
             $link = 'enroll.php?websiteId=' . $websiteId;
             $text = 'Enroll Now!';
         } elseif ($action === 'login') {
-            $link = 'login.php'. $websiteId;
+            $link = 'login.php?websiteId='. $websiteId;
             $text = 'Student Login';
         } elseif ($action === 'register') {
-            $link = 'enroll.php'. $websiteId;
+            $link = 'enroll.php?websiteId='. $websiteId;
             $text = 'Student Register';
+        } elseif ($action === 'facultyLogin') {
+            $link = 'facultylogin.php?websiteId='. $websiteId;
+            $text = 'Faculty Register';
+        } elseif ($action === 'facultyRegister') {
+            $link = 'facultyregister.php?websiteId='. $websiteId;
+            $text = 'Faculty Register';
         }
         if (isset($link) && isset($text)) {
             $stmt = $pdo->prepare("INSERT INTO contents (templateId, tag, text, href, target) VALUES (?, ?, ?, ?, ?)");
@@ -157,6 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_page'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Page</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg" href="icons/logo.svg">
 </head>
 <body style="height: 100vh; overflow: auto;">
     <header style="z-index: 999;">
@@ -184,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_page'])) {
                     <?php include 'addtemplate.php'?>
                     <?php include 'addContent.php'?>
                     <div class="form-container" style="margin: 20px 0;">
-                        <div class="enroll-link-section">
+                        <div class="enroll-link-section" style="flex-wrap: wrap; display: flex; ">
                             <form method="POST" style="display:flex; align-items:center; gap:12px;">
                                 <input type="hidden" name="add_link_action" id="add_link_action" value="">
                                 <label for="enroll_template_id">Add to template:</label>
@@ -199,6 +206,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_page'])) {
                                 <button type="button" onclick="setLinkAction('enroll')">Add "Enroll Now!" Link</button>
                                 <button type="button" onclick="setLinkAction('login')">Add "Student Login" Link</button>
                                 <button type="button" onclick="setLinkAction('register')">Add "Student Register" Link</button>
+                                <button type="button" onclick="setLinkAction('facultyRegister')">Add "Faculty Register" Link</button>
+                                <button type="button" onclick="setLinkAction('facultyLogin')">Add "Faculty Login" Link</button>
                             </form>
                             <script>
                             function setLinkAction(action) {
@@ -322,6 +331,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_page'])) {
                 <input type="text" name="padding" id="modalPadding">
             </div>
             <div>
+                <label>Order: </label>
+                <input type="number" name="order" id="modalOrder">
+            </div>
+            <div>
                 <label>Background Color:</label>
                 <input type="checkbox" id="bgColorCheckbox" onclick="toggleBgColorInput()"> Enable
                 <input type="color" name="backgroundColor" id="modalBgColor" style="display:none;">
@@ -367,11 +380,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_page'])) {
             <input type="hidden" name="editTemplateId" id="modalTemplateId">
             <div>
                 <label>Template Name:</label>
-                <input type="text" name="templateName" id="modalTemplateName" disabled>
+                <input type="text" name="templateName" id="modalTemplateName" readonly>
             </div>
             <div>
                 <label>Type:</label>
-                <input type="text" name="templateType" id="modalTemplateType" disabled>
+                <input type="text" name="templateType" id="modalTemplateType" readonly>
             </div>
             <div>
                 <label>Width:</label>
@@ -461,6 +474,7 @@ function openModal(content) {
     document.getElementById('modalHeight').value = content.height || '';
     document.getElementById('modalMargin').value = content.margin || '';
     document.getElementById('modalPadding').value = content.padding || '';
+    document.getElementById('modalOrder').value = content.order || '';
     const bgCheckbox = document.getElementById('bgColorCheckbox');
     const bgInput = document.getElementById('modalBgColor');
     if (content.backgroundColor && content.backgroundColor !== 'null' && content.backgroundColor !== '') {

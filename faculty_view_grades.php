@@ -85,13 +85,13 @@ if (isset($_GET['edit'])) {
     <style>
         body {
             margin: 0;
-            background: #f3f4f6;
-            font-family: Arial, sans-serif;
+            background: #CBC3BE;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
         .sidebar {
             width: 220px;
             height: 100vh;
-            background: #6366f1;
+            background: #B32113;
             color: #fff;
             position: fixed;
             left: 0; top: 0;
@@ -99,7 +99,7 @@ if (isset($_GET['edit'])) {
             flex-direction: column;
             align-items: flex-start;
             padding: 32px 18px 18px 18px;
-            box-shadow: 2px 0 8px rgba(99,102,241,0.08);
+            box-shadow: 2px 0 8px rgba(179,33,19,0.08);
         }
         .sidebar h2 {
             margin: 0 0 32px 0;
@@ -124,8 +124,16 @@ if (isset($_GET['edit'])) {
             text-decoration: none;
         }
         .sidebar a:hover {
-            background: #4f46e5;
-            color: #e0e7ff;
+            background: #8F1600;
+            color: #CBC3BE;
+        }
+        .sidebar a.logout {
+            color: #CBC3BE;
+            font-weight: bold;
+        }
+        .sidebar a.logout:hover {
+            background: #CBC3BE;
+            color: #B32113;
         }
         .main-content {
             margin-left: 240px;
@@ -137,18 +145,18 @@ if (isset($_GET['edit'])) {
             padding: 28px 24px 18px 24px;
             border-radius: 10px;
             margin-bottom: 32px;
-            box-shadow: 0 2px 8px rgba(99,102,241,0.06);
+            box-shadow: 0 2px 8px rgba(179,33,19,0.06);
             max-width: 420px;
         }
         .form-container h2 {
             margin-top: 0;
-            color: #6366f1;
+            color: #B32113;
             font-size: 20px;
         }
         .form-container label {
             display: block;
             margin-bottom: 6px;
-            color: #444;
+            color: #8F1600;
             font-weight: 500;
         }
         .form-container input[type="text"],
@@ -157,16 +165,25 @@ if (isset($_GET['edit'])) {
             width: 100%;
             padding: 9px 12px;
             margin-bottom: 16px;
-            border: 1px solid #d1d5db;
+            border: 1.5px solid #B32113;
             border-radius: 5px;
             font-size: 15px;
-            background: #f9fafb;
-            transition: border-color 0.2s;
+            background: #CBC3BE;
+            color: #831005;
+            transition: border-color 0.2s, background 0.2s;
+            box-sizing: border-box;
+        }
+        .form-container input[type="text"]:focus,
+        .form-container input[type="number"]:focus,
+        .form-container select:focus {
+            border-color: #8F1600;
+            background: #fff;
+            outline: none;
         }
         .form-container button[type="submit"] {
             width: 100%;
             padding: 12px;
-            background: #6366f1;
+            background: #B32113;
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -177,12 +194,16 @@ if (isset($_GET['edit'])) {
             margin-top: 10px;
         }
         .form-container button[type="submit"]:hover {
-            background: #4f46e5;
+            background: #831005;
         }
         .form-container a {
-            color: #6366f1;
+            color: #B32113;
             text-decoration: underline;
             margin-left: 12px;
+            font-weight: bold;
+        }
+        .form-container a:hover {
+            color: #8F1600;
         }
         .grades-section {
             max-width: 900px;
@@ -194,35 +215,40 @@ if (isset($_GET['edit'])) {
             background: #fff;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(99,102,241,0.06);
+            box-shadow: 0 2px 8px rgba(179,33,19,0.06);
         }
         th, td {
-            border: 1px solid #d1d5db;
+            border: 1px solid #A6A6AB;
             padding: 10px;
             text-align: center;
         }
         th {
-            background: #f3f4f6;
+            background: #CBC3BE;
+            color: #831005;
+            font-weight: bold;
         }
         .edit-link, .delete-link {
-            color: #6366f1; text-decoration: underline; cursor: pointer; margin: 0 6px;
+            color: #B32113; text-decoration: underline; cursor: pointer; margin: 0 6px; font-weight: bold;
         }
-        .delete-link { color: #f87171; }
-        .edit-link:hover { color: #4f46e5; }
-        .delete-link:hover { color: #dc2626; }
+        .delete-link { color: #8F1600; }
+        .edit-link:hover { color: #8F1600; }
+        .delete-link:hover { color: #B32113; }
         .back-link {
             display: inline-block;
             margin-top: 32px;
-            color: #6366f1;
+            color: #B32113;
             text-decoration: none;
             font-weight: bold;
         }
         .back-link:hover {
-            color: #4f46e5;
+            color: #8F1600;
         }
         @media (max-width: 900px) {
             .main-content { padding: 20px 5vw; }
             .grades-section { max-width: 100vw; }
+            .sidebar { position: static; width: 100vw; height: auto; flex-direction: row; align-items: center; padding: 16px 8px; }
+            .sidebar h2 { margin: 0 16px 0 0; font-size: 1.1em; }
+            .sidebar a { display: inline-block; width: auto; padding: 10px 14px; margin-bottom: 0; margin-right: 8px; }
         }
     </style>
 </head>
@@ -232,7 +258,7 @@ if (isset($_GET['edit'])) {
         <a href="faculty_dashboard.php">Dashboard Home</a>
         <a href="faculty_enrollments.php">Check Enrollment Forms</a>
         <a href="faculty_grades.php">Grades Per Student</a>
-        <a href="logout.php" style="color:#f87171;">Logout</a>
+        <a href="logout.php" class="logout">Logout</a>
     </div>
     <div class="main-content">
         <h1 style="margin-top:0;">Grades for <?= htmlspecialchars($student['lastName'] . ', ' . $student['firstName']) ?></h1>
@@ -270,7 +296,7 @@ if (isset($_GET['edit'])) {
         <div class="grades-section">
         <?php if ($grades): ?>
             <?php foreach ($grouped as $group => $rows): ?>
-                <h3 style="margin-top:30px; color:#6366f1;"><?= htmlspecialchars($group) ?></h3>
+                <h3 style="margin-top:30px; color:#B32113;"><?= htmlspecialchars($group) ?></h3>
                 <table>
                     <tr>
                         <th>Professor</th>

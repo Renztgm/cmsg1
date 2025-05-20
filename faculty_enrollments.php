@@ -7,6 +7,19 @@ if (!isset($_SESSION['faculty_id'])) {
     exit();
 }
 
+// Handle status update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'], $_POST['enrollmentId'])) {
+    $newStatus = $_POST['update_status'];
+    $enrollmentId = $_POST['enrollmentId'];
+    if (in_array($newStatus, ['approved', 'pending', 'rejected'])) {
+        $stmt = $pdo->prepare("UPDATE enrollmentForm SET status = ? WHERE enrollmentId = ?");
+        $stmt->execute([$newStatus, $enrollmentId]);
+    }
+    // Refresh to show updated status
+    header("Location: faculty_enrollments.php");
+    exit();
+}
+
 // Fetch all enrollment forms
 $stmt = $pdo->query("SELECT enrollmentId, firstName, lastName, status FROM enrollmentForm ORDER BY status, lastName");
 $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -16,17 +29,16 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <title>Check Enrollment Forms</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             margin: 0;
-            background: #f3f4f6;
-            font-family: Arial, sans-serif;
+            background: #CBC3BE;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
         .sidebar {
             width: 220px;
             height: 100vh;
-            background: #6366f1;
+            background: #B32113;
             color: #fff;
             position: fixed;
             left: 0; top: 0;
@@ -34,13 +46,14 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
             flex-direction: column;
             align-items: flex-start;
             padding: 32px 18px 18px 18px;
-            box-shadow: 2px 0 8px rgba(99,102,241,0.08);
+            box-shadow: 2px 0 8px rgba(179,33,19,0.08);
         }
         .sidebar h2 {
             margin: 0 0 32px 0;
             font-size: 22px;
             font-weight: bold;
             color: #fff;
+            letter-spacing: 1px;
         }
         .sidebar a {
             display: block;
@@ -59,12 +72,25 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
             text-decoration: none;
         }
         .sidebar a:hover {
-            background: #4f46e5;
-            color: #e0e7ff;
+            background: #8F1600;
+            color: #CBC3BE;
+        }
+        .sidebar a.logout {
+            color: #CBC3BE;
+            font-weight: bold;
+        }
+        .sidebar a.logout:hover {
+            background: #CBC3BE;
+            color: #B32113;
         }
         .main-content {
             margin-left: 240px;
             padding: 40px 32px;
+        }
+        .main-content h1 {
+            color: #B32113;
+            font-size: 2.2em;
+            margin-bottom: 18px;
         }
         table {
             width: 100%;
@@ -73,21 +99,35 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
             background: #fff;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(99,102,241,0.06);
+            box-shadow: 0 2px 8px rgba(179,33,19,0.06);
         }
         th, td {
-            border: 1px solid #d1d5db;
-            padding: 10px;
+            border: 1px solid #A6A6AB;
+            padding: 12px;
             text-align: center;
         }
         th {
-            background: #f3f4f6;
+            background: #CBC3BE;
+            color: #831005;
+            font-weight: bold;
         }
-        .status-pending { color: #f59e42; font-weight: bold; }
+        .status-pending { color: #B32113; font-weight: bold; }
         .status-approved { color: #22c55e; font-weight: bold; }
-        .status-rejected { color: #f87171; font-weight: bold; }
+        .status-rejected { color: #8F1600; font-weight: bold; }
+        a.view-link {
+            color: #1873D3;
+            text-decoration: underline;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        a.view-link:hover {
+            color: #020082;
+        }
         @media (max-width: 900px) {
-            .main-content { padding: 20px 5vw; }
+            .main-content { padding: 20px 5vw; margin-left: 0; }
+            .sidebar { position: static; width: 100vw; height: auto; flex-direction: row; align-items: center; padding: 16px 8px; }
+            .sidebar h2 { margin: 0 16px 0 0; font-size: 1.1em; }
+            .sidebar a { display: inline-block; width: auto; padding: 10px 14px; margin-bottom: 0; margin-right: 8px; }
         }
     </style>
 </head>
@@ -97,7 +137,7 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <a href="faculty_dashboard.php">Dashboard Home</a>
         <a href="faculty_enrollments.php">Check Enrollment Forms</a>
         <a href="faculty_grades.php">Grades Per Student</a>
-        <a href="logout.php" style="color:#f87171;">Logout</a>
+        <a href="logout.php" class="logout">Logout</a>
     </div>
     <div class="main-content">
         <h1>Enrollment Forms</h1>
@@ -111,10 +151,17 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <tr>
                 <td><?= htmlspecialchars($student['lastName'] . ', ' . $student['firstName']) ?></td>
                 <td class="status-<?= strtolower($student['status']) ?>">
-                    <?= htmlspecialchars(ucfirst($student['status'])) ?>
+                    <form method="POST" style="display:inline;">
+                        <input type="hidden" name="enrollmentId" value="<?= $student['enrollmentId'] ?>">
+                        <select name="update_status" onchange="this.form.submit()" style="padding:4px 8px; border-radius:4px;">
+                            <option value="pending" <?= $student['status'] === 'pending' ? 'selected' : '' ?>>Pending</option>
+                            <option value="approved" <?= $student['status'] === 'approved' ? 'selected' : '' ?>>Approved</option>
+                            <option value="rejected" <?= $student['status'] === 'rejected' ? 'selected' : '' ?>>Rejected</option>
+                        </select>
+                    </form>
                 </td>
                 <td>
-                    <a href="studentportal.php?id=<?= $student['enrollmentId'] ?>" target="_blank" style="color:#6366f1;text-decoration:underline;">View</a>
+                    <a href="faculty_view_grades.php?id=<?= $student['enrollmentId'] ?>" target="_blank" class="view-link">View</a>
                 </td>
             </tr>
             <?php endforeach; ?>

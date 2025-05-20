@@ -2,17 +2,17 @@
 include_once 'db.php';
 include 'createwebsite.php';
 ?>
-
+<link rel="icon" type="image/svg" href="icons/logo.svg">
 <!-- Top Navigation Bar -->
 <nav style="width:100%;background:#2B7A78;padding:18px 0 18px 0;box-shadow:0 2px 8px rgba(23,37,42,0.08);margin-bottom:32px;">
     <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 24px;">
-        <div style="font-size:1.5em;font-weight:bold;color:#FEFFFF;letter-spacing:1px;">
-            CMS Dashboard
+        <div style="font-size:1.5em;font-weight:bold;color:#FEFFFF;letter-spacing:1px; align-items:center;display:flex; gap: 30px;" >
+            <img src="icons/logo.svg" width="75px" height="auto" alt=""> PRISM
         </div>
         <div style="display:flex;gap:18px;">
             <a href="index.php" style="color:#FEFFFF;text-decoration:none;font-weight:500;font-size:1em;">Home</a>
             
-            <a href="logoutuser.php" style="color:#3AAFA9;text-decoration:none;font-weight:500;font-size:1em;">Logout</a>
+            <a href="userlogout.php" style="color:#3AAFA9;text-decoration:none;font-weight:500;font-size:1em;">Logout</a>
         </div>
     </div>
 </nav>

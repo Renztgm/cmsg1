@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contentId'])) {
     $fontColor = $_POST['fontColor'] ?? $_POST['linkFontColor'] ?? null;
     $href = $_POST['href'] ?? null;
     $target = $_POST['target'] ?? null;
+    $order = $_POST['order'] ?? null;
 
     $success = true;
 
@@ -40,11 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contentId'])) {
     }
 
     // Update other fields
-    $stmt = $pdo->prepare("UPDATE contents SET width = ?, height = ?, backgroundColor = ?, text = ?, margin = ?, padding = ?, fontFamily = ?, fontSize = ?, fontColor = ?, href = ?, target = ? WHERE contentId = ?");
+    $stmt = $pdo->prepare("UPDATE contents SET width = ?, height = ?, backgroundColor = ?, text = ?, margin = ?, padding = ?, fontFamily = ?, fontSize = ?, fontColor = ?, href = ?, target = ?, orderContent = ? WHERE contentId = ?");
     if (!$stmt->execute([
         $width, $height, $backgroundColor, $text, $margin, $padding,
         $fontFamily, $fontSize, $fontColor,
-        $href, $target, $contentId
+        $href, $target, $order, $contentId
     ])) {
         $success = false;
     }

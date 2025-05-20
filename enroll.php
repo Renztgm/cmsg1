@@ -4,33 +4,37 @@ include_once 'db.php'; // Make sure this connects to your PDO $pdo
 $websiteId = $_POST['websiteId'] ?? $_GET['websiteId'] ?? null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    $stmt = $pdo->prepare("INSERT INTO enrollmentForm 
-        (websiteId, firstName, lastName, birthdate, sex, houseNo_streetName, baranggay, city, country, phoneNumber, course, semester, year, username, email, password)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $success = $stmt->execute([
-        $websiteId,
-        $_POST['firstName'],
-        $_POST['lastName'],
-        $_POST['birthdate'],
-        $_POST['sex'],
-        $_POST['houseNo_streetName'],
-        $_POST['baranggay'],
-        $_POST['city'],
-        $_POST['country'],
-        $_POST['phoneNumber'],
-        $_POST['course'],
-        $_POST['semester'],
-        $_POST['year'],
-        $_POST['username'],
-        $_POST['email'],
-        password_hash($_POST['password'], PASSWORD_DEFAULT)
-    ]);
-    if ($success) {
-        echo "<script>alert('Enrollment successful!');</script>";
-        header("Location: enroll.php?websiteId=$websiteId");
-        exit();
+    if ($_POST['password'] !== $_POST['confirm_password']) {
+        echo "<script>alert('Passwords do not match!');</script>";
     } else {
-        echo "<script>alert('Enrollment failed!');</script>";
+        $stmt = $pdo->prepare("INSERT INTO enrollmentForm 
+            (websiteId, firstName, lastName, birthdate, sex, houseNo_streetName, baranggay, city, country, phoneNumber, course, semester, year, username, email, password)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $success = $stmt->execute([
+            $websiteId,
+            $_POST['firstName'],
+            $_POST['lastName'],
+            $_POST['birthdate'],
+            $_POST['sex'],
+            $_POST['houseNo_streetName'],
+            $_POST['baranggay'],
+            $_POST['city'],
+            $_POST['country'],
+            $_POST['phoneNumber'],
+            $_POST['course'],
+            $_POST['semester'],
+            $_POST['year'],
+            $_POST['username'],
+            $_POST['email'],
+            password_hash($_POST['password'], PASSWORD_DEFAULT)
+        ]);
+        if ($success) {
+            echo "<script>alert('Enrollment successful!');</script>";
+            header("Location: enroll.php?websiteId=$websiteId");
+            exit();
+        } else {
+            echo "<script>alert('Enrollment failed!');</script>";
+        }
     }
 }
 ?>
@@ -40,26 +44,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     <title>Enrollment Form</title>
     <style>
         body {
-            background: #f6f8fa;
-            font-family: Arial, sans-serif;
+            background: #EDEDF9;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
         .enroll-container {
             background: #fff;
             max-width: 400px;
             margin: 40px auto;
             padding: 32px 28px 24px 28px;
-            border-radius: 10px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            border-radius: 14px;
+            box-shadow: 0 4px 24px rgba(0,0,78,0.08);
+            border: 2px solid #1873D3;
         }
         h2 {
             text-align: center;
-            color: #333;
+            color: #020082;
             margin-bottom: 28px;
+            font-weight: bold;
         }
         .enroll-form label {
             display: block;
             margin-bottom: 6px;
-            color: #444;
+            color: #020082;
             font-weight: 500;
         }
         .enroll-form input[type="text"],
@@ -71,11 +77,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             width: 100%;
             padding: 10px 12px;
             margin-bottom: 16px;
-            border: 1px solid #d1d5db;
-            border-radius: 5px;
+            border: 1.5px solid #1873D3;
+            border-radius: 6px;
             font-size: 15px;
-            background: #f9fafb;
-            transition: border-color 0.2s;
+            background: #EDEDF9;
+            transition: border-color 0.2s, background 0.2s;
+            color: #00004E;
+            box-sizing: border-box;
         }
         .enroll-form input[type="text"]:focus,
         .enroll-form input[type="date"]:focus,
@@ -83,17 +91,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         .enroll-form input[type="number"]:focus,
         .enroll-form input[type="password"]:focus,
         .enroll-form select:focus {
-            border-color: #6366f1;
+            border-color: #020082;
             outline: none;
             background: #fff;
         }
         .enroll-form button {
             width: 100%;
             padding: 12px;
-            background: #6366f1;
+            background: #1873D3;
             color: #fff;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
@@ -101,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             margin-bottom: 8px;
         }
         .enroll-form button:hover {
-            background: #4f46e5;
+            background: #020082;
         }
         .step {
             display: none;
@@ -119,14 +127,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             height: 22px;
             line-height: 22px;
             border-radius: 50%;
-            background: #e0e7ff;
-            color: #6366f1;
+            background: #EDEDF9;
+            color: #1873D3;
             margin: 0 4px;
             font-weight: bold;
+            border: 1.5px solid #1873D3;
         }
         .step-indicator .active {
-            background: #6366f1;
+            background: #1873D3;
             color: #fff;
+            border-color: #020082;
         }
     </style>
 </head>
@@ -217,10 +227,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 <input type="email" name="email" required>
                 <label>Password</label>
                 <input type="password" name="password" required>
+                <label>Confirm Password</label>
+                <input type="password" name="confirm_password" required>
                 <button type="button" onclick="prevStep(3)">Back</button>
                 <button type="submit" name="submit">Enroll</button>
             </div>
         </form>
+        <div style="text-align:center; margin-top:18px;">
+            Already enrolled? <a href="login.php" style="color:#1873D3; font-weight:bold; text-decoration:none;">Login</a>
+        </div>
     </div>
     <script>
         let currentStep = 0;

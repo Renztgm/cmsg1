@@ -16,17 +16,16 @@ $facultyName = $_SESSION['faculty_name'] ?? 'Faculty';
 <head>
     <meta charset="UTF-8">
     <title>Faculty Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
+        <style>
         body {
             margin: 0;
-            background: #f3f4f6;
-            font-family: Arial, sans-serif;
+            background: #CBC3BE;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
         .sidebar {
             width: 220px;
             height: 100vh;
-            background: #6366f1;
+            background: #B32113;
             color: #fff;
             position: fixed;
             left: 0; top: 0;
@@ -34,13 +33,14 @@ $facultyName = $_SESSION['faculty_name'] ?? 'Faculty';
             flex-direction: column;
             align-items: flex-start;
             padding: 32px 18px 18px 18px;
-            box-shadow: 2px 0 8px rgba(99,102,241,0.08);
+            box-shadow: 2px 0 8px rgba(179,33,19,0.08);
         }
         .sidebar h2 {
             margin: 0 0 32px 0;
             font-size: 22px;
             font-weight: bold;
             color: #fff;
+            letter-spacing: 1px;
         }
         .sidebar a, .sidebar button {
             display: block;
@@ -59,12 +59,55 @@ $facultyName = $_SESSION['faculty_name'] ?? 'Faculty';
             text-decoration: none;
         }
         .sidebar a:hover, .sidebar button:hover {
-            background: #4f46e5;
-            color: #e0e7ff;
+            background: #8F1600;
+            color: #CBC3BE;
+        }
+        .sidebar a.logout {
+            color: #CBC3BE;
+            font-weight: bold;
+        }
+        .sidebar a.logout:hover {
+            background: #CBC3BE;
+            color: #B32113;
         }
         .main-content {
             margin-left: 240px;
             padding: 40px 32px;
+        }
+        .main-content h1 {
+            color: #B32113;
+            font-size: 2.2em;
+            margin-bottom: 12px;
+        }
+        .main-content p {
+            color: #8F1600;
+            font-size: 1.1em;
+        }
+        @media (max-width: 700px) {
+            .sidebar {
+                width: 100vw;
+                height: auto;
+                flex-direction: row;
+                align-items: center;
+                padding: 16px 8px;
+                position: static;
+                box-shadow: none;
+            }
+            .sidebar h2 {
+                margin: 0 16px 0 0;
+                font-size: 1.1em;
+            }
+            .sidebar a, .sidebar button {
+                display: inline-block;
+                width: auto;
+                padding: 10px 14px;
+                margin-bottom: 0;
+                margin-right: 8px;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 24px 8px;
+            }
         }
     </style>
 </head>
@@ -74,7 +117,7 @@ $facultyName = $_SESSION['faculty_name'] ?? 'Faculty';
         <a href="faculty_dashboard.php">Dashboard Home</a>
         <a href="faculty_enrollments.php">Check Enrollment Forms</a>
         <a href="faculty_grades.php">Grades Per Student</a>
-        <a href="logout.php" style="color:#f87171;">Logout</a>
+        <a href="logout.php" class="logout">Logout</a>
     </div>
     <div class="main-content">
         <h1>Welcome, <?= htmlspecialchars($facultyName) ?>!</h1>
